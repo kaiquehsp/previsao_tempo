@@ -150,3 +150,18 @@ test/
 ├── cptec_parser_test.dart           # Parser, siglas, acentos e datas
 └── widget_test.dart                 # Busca, "nenhuma cidade", erros (com MockClient)
 ```
+
+## Capturas de tela
+
+
+## Capturas de tela
+
+| Tela inicial | Resultados da busca | Previsão |
+|---|---|---|
+| ![Tela inicial](docs/screenshots/buscar.png) | ![Resultados da busca](docs/screenshots/resultado.png) | ![Previsão](docs/screenshots/previsao.png) |
+
+| Gráfico da previsão |
+|---|
+| ![Gráfico](docs/screenshots/grafico.png) |
+
+
