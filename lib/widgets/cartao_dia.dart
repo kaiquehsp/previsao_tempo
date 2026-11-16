@@ -4,7 +4,6 @@ import '../models/previsao.dart';
 import '../utils/condicoes_tempo.dart';
 import '../utils/texto.dart';
 
-/// Cartão com a previsão de um dia: data, ícone, condição, mín/máx e IUV.
 class CartaoDia extends StatelessWidget {
   final PrevisaoDia dia;
 

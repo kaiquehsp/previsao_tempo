@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Identifica o CPTEC/INPE como fonte dos dados (requisito da atividade).
 class RodapeFonte extends StatelessWidget {
   const RodapeFonte({super.key});
 

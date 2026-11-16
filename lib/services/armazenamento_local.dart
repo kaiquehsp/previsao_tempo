@@ -6,7 +6,6 @@ import '../models/cidade.dart';
 import '../models/previsao.dart';
 import 'cptec_parser.dart';
 
-/// Previsão recuperada do cache local, com a data em que foi salva.
 class PrevisaoSalva {
   final PrevisaoCidade previsao;
   final DateTime salvaEm;
@@ -14,14 +13,6 @@ class PrevisaoSalva {
   const PrevisaoSalva(this.previsao, this.salvaEm);
 }
 
-/// Persistência local com `shared_preferences` (chave/valor):
-///
-/// * `cidades_recentes`  → JSON com as últimas cidades consultadas;
-/// * `cidades_favoritas` → JSON com as cidades marcadas como favoritas;
-/// * `previsao_cache_{codigo}` → JSON com o XML da última previsão
-///   obtida para a cidade e a data/hora em que foi salva.
-///
-/// Qualquer dado corrompido é ignorado (nunca derruba o aplicativo).
 class ArmazenamentoLocal {
   static const chaveRecentes = 'cidades_recentes';
   static const chaveFavoritas = 'cidades_favoritas';
@@ -29,8 +20,6 @@ class ArmazenamentoLocal {
   static const maximoRecentes = 8;
 
   Future<SharedPreferences> get _prefs => SharedPreferences.getInstance();
-
-  // ---------------------------------------------------------------- recentes
 
   Future<List<Cidade>> recentes() => _lerCidades(chaveRecentes);
 
@@ -46,14 +35,11 @@ class ArmazenamentoLocal {
     await prefs.remove(chaveRecentes);
   }
 
-  // --------------------------------------------------------------- favoritas
-
   Future<List<Cidade>> favoritas() => _lerCidades(chaveFavoritas);
 
   Future<bool> ehFavorita(Cidade cidade) async =>
       (await favoritas()).contains(cidade);
 
-  /// Adiciona ou remove dos favoritos. Retorna `true` se ficou favorita.
   Future<bool> alternarFavorita(Cidade cidade) async {
     final lista = await favoritas();
     final bool favorita;
@@ -68,8 +54,6 @@ class ArmazenamentoLocal {
     await _salvarCidades(chaveFavoritas, lista);
     return favorita;
   }
-
-  // -------------------------------------------------------- cache previsão
 
   Future<void> salvarPrevisao(int codigoCidade, String xml) async {
     final prefs = await _prefs;
@@ -96,8 +80,6 @@ class ArmazenamentoLocal {
       return null;
     }
   }
-
-  // ------------------------------------------------------------- auxiliares
 
   Future<List<Cidade>> _lerCidades(String chave) async {
     try {

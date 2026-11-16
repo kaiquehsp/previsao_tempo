@@ -10,7 +10,6 @@ import '../widgets/grafico_temperaturas.dart';
 import '../widgets/mensagem_estado.dart';
 import '../widgets/rodape_fonte.dart';
 
-/// Previsão de 4 dias da cidade selecionada, com gráfico de temperaturas.
 class TelaPrevisao extends StatefulWidget {
   final Cidade cidade;
   final CptecService servico;
@@ -30,7 +29,6 @@ class TelaPrevisao extends StatefulWidget {
 class _TelaPrevisaoState extends State<TelaPrevisao> {
   PrevisaoCidade? _previsao;
 
-  /// `true` quando a previsão exibida veio do cache local.
   bool _exibindoCache = false;
   DateTime? _salvaEm;
 
@@ -46,8 +44,6 @@ class _TelaPrevisaoState extends State<TelaPrevisao> {
     _iniciar();
   }
 
-  /// Mostra imediatamente a última previsão salva (se houver) e, em seguida,
-  /// busca a previsão atualizada no CPTEC/INPE.
   Future<void> _iniciar() async {
     final favorita = await widget.armazenamento.ehFavorita(_cidade);
     final salva = await widget.armazenamento.previsaoSalva(_cidade.id);
@@ -78,7 +74,6 @@ class _TelaPrevisaoState extends State<TelaPrevisao> {
       if (!mounted) return;
       setState(() {
         if (resultado.previsao.vazia && _previsao != null && _exibindoCache) {
-          // O serviço não trouxe previsão: mantém a salva e avisa.
           _erro = const CptecException(
             TipoErroCptec.respostaInvalida,
             'O CPTEC/INPE não retornou previsão para esta cidade agora.',
@@ -90,7 +85,6 @@ class _TelaPrevisaoState extends State<TelaPrevisao> {
         }
       });
     } catch (falha) {
-      // Erros não previstos também viram mensagem (o app não pode fechar).
       final e = falha is CptecException
           ? falha
           : const CptecException(

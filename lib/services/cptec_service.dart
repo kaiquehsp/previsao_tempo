@@ -14,7 +14,6 @@ enum TipoErroCptec {
   respostaInvalida,
 }
 
-/// Erro tratado e já com uma mensagem amigável para o usuário.
 class CptecException implements Exception {
   final TipoErroCptec tipo;
   final String mensagem;
@@ -28,15 +27,12 @@ class CptecException implements Exception {
 class ResultadoPrevisao {
   final PrevisaoCidade previsao;
 
-  /// XML original, guardado no cache local para uso sem conexão.
   final String xml;
 
   const ResultadoPrevisao(this.previsao, this.xml);
 }
 
-/// Cliente do serviço XML do CPTEC/INPE (https://servicos.cptec.inpe.br/XML/).
 class CptecService {
-  /// Tentamos HTTPS primeiro; se a conexão falhar, tentamos HTTP.
   static const List<String> enderecosBase = [
     'https://servicos.cptec.inpe.br/XML',
     'http://servicos.cptec.inpe.br/XML',
@@ -48,8 +44,6 @@ class CptecService {
 
   CptecService({http.Client? client}) : _client = client ?? http.Client();
 
-  /// Pesquisa localidades pelo nome (`listaCidades?city=`).
-  /// O serviço exige o nome sem acentos.
   Future<List<Cidade>> buscarCidades(String termo) async {
     final busca = removerAcentos(termo)
         .trim()
@@ -61,7 +55,6 @@ class CptecService {
     return _converter(() => CptecParser.parseCidades(xml));
   }
 
-  /// Previsão para 4 dias (`cidade/{codigo}/previsao.xml`).
   Future<ResultadoPrevisao> buscarPrevisao(int codigoCidade) async {
     final xml = await _get('/cidade/$codigoCidade/previsao.xml');
     final previsao = _converter(() => CptecParser.parsePrevisao(xml));
@@ -97,8 +90,7 @@ class CptecService {
           'Verifique sua conexão e tente novamente.',
         );
       } catch (_) {
-        // Falha de conexão (sem internet, DNS, TLS...). Tenta o próximo
-        // endereço; se todos falharem, informa o usuário abaixo.
+        continue;
       }
     }
     throw const CptecException(

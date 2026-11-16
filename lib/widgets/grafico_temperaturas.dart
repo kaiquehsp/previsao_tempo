@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import '../models/previsao.dart';
 import '../utils/texto.dart';
 
-/// Gráfico de linhas com as temperaturas mínima e máxima de cada dia.
 class GraficoTemperaturas extends StatelessWidget {
   final List<PrevisaoDia> dias;
 
@@ -34,7 +33,6 @@ class GraficoTemperaturas extends StatelessWidget {
       );
     }
 
-    // Eixo Y em múltiplos de 5 °C, com folga acima e abaixo.
     const intervaloY = 5.0;
     final menor = valores.reduce(math.min) - 2;
     final maior = valores.reduce(math.max) + 2;

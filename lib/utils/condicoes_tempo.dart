@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Descrição, ícone e cor de uma condição do tempo.
 class CondicaoTempo {
   final String descricao;
   final IconData icone;
@@ -9,7 +8,6 @@ class CondicaoTempo {
   const CondicaoTempo(this.descricao, this.icone, this.cor);
 }
 
-// Ícones e cores por "família" de condição.
 const _sol = (Icons.wb_sunny, Color(0xFFF9A825));
 const _solComNuvens = (Icons.filter_drama, Color(0xFFFFB300));
 const _nublado = (Icons.cloud, Color(0xFF78909C));
@@ -26,8 +24,6 @@ const _indefinido = (Icons.help_outline, Color(0xFF9E9E9E));
 CondicaoTempo _c(String descricao, (IconData, Color) estilo) =>
     CondicaoTempo(descricao, estilo.$1, estilo.$2);
 
-/// Tabela de siglas conforme a documentação do CPTEC/INPE
-/// (https://servicos.cptec.inpe.br/XML/ – "Condições do tempo").
 final Map<String, CondicaoTempo> condicoesTempo = {
   'ec': _c('Encoberto com chuvas isoladas', _pancadas),
   'ci': _c('Chuvas isoladas', _pancadas),
@@ -71,8 +67,6 @@ final Map<String, CondicaoTempo> condicoesTempo = {
   'ppm': _c('Possibilidade de pancadas de chuva pela manhã', _possivelChuva),
 };
 
-/// Converte a sigla recebida do serviço em uma descrição compreensível.
-/// Nunca lança exceção: siglas ausentes ou desconhecidas têm um texto padrão.
 CondicaoTempo condicaoPorSigla(String? sigla) {
   if (sigla == null || sigla.trim().isEmpty) {
     return _c('Condição não informada', _indefinido);
@@ -82,7 +76,6 @@ CondicaoTempo condicaoPorSigla(String? sigla) {
       _c('Condição desconhecida ($chave)', _indefinido);
 }
 
-/// Classificação do índice ultravioleta (escala da OMS).
 class FaixaUv {
   final String rotulo;
   final Color cor;

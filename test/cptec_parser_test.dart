@@ -95,7 +95,6 @@ void main() {
     expect(CptecParser.decodificar(latin1.encode(xmlCidades)), xmlCidades);
     const utf = '<?xml version="1.0" encoding="UTF-8"?><cidades/>';
     expect(CptecParser.decodificar(utf8.encode(utf)), utf);
-    // Sem declaração e com bytes Latin-1: usa Latin-1 como alternativa.
     expect(CptecParser.decodificar(latin1.encode('<a>São</a>')), '<a>São</a>');
   });
 

@@ -7,7 +7,6 @@ import '../widgets/mensagem_estado.dart';
 import '../widgets/rodape_fonte.dart';
 import 'tela_previsao.dart';
 
-/// Tela inicial: pesquisa de cidades + favoritas e consultas recentes.
 class TelaBusca extends StatefulWidget {
   final CptecService? servico;
   final ArmazenamentoLocal? armazenamento;
@@ -114,7 +113,6 @@ class _TelaBuscaState extends State<TelaBusca> {
         ),
       ),
     );
-    // Ao voltar, atualiza favoritas/recentes (podem ter mudado).
     await _carregarCidadesSalvas();
   }
 

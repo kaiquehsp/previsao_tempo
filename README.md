@@ -13,6 +13,7 @@ mostra a previsão de quatro dias e um gráfico com as temperaturas mínimas e m
 ## Funcionalidades implementadas
 
 ### 1. Pesquisa de cidades
+
 - Campo para digitar o nome da cidade (acentos são removidos automaticamente, como o serviço exige).
 - Consulta ao endpoint `listaCidades?city=<nome>` do CPTEC/INPE.
 - Lista de resultados com **nome da cidade** e **unidade da federação (UF)**; um toque abre a previsão.
@@ -20,6 +21,7 @@ mostra a previsão de quatro dias e um gráfico com as temperaturas mínimas e m
 - Mensagem **"Nenhuma cidade encontrada"** quando a busca não tem resultados.
 
 ### 2. Consulta da previsão do tempo (tela de previsão)
+
 - Consulta ao endpoint `cidade/<código>/previsao.xml` (previsão para 4 dias) e exibição de **todos os dias retornados**.
 - Para cada dia:
   - data da previsão (com "Hoje"/"Amanhã" e dia da semana);
@@ -31,6 +33,7 @@ mostra a previsão de quatro dias e um gráfico com as temperaturas mínimas e m
 - **Gráfico de linhas** (fl_chart) com as temperaturas máximas e mínimas dos dias.
 
 ### 3. Atualização e tratamento de erros
+
 - Botão **↻ Atualizar** na barra superior e **"arrastar para atualizar"** (pull-to-refresh).
 - **Indicador de carregamento** (barra de progresso e spinner) durante as consultas.
 - Tratamento de:
@@ -44,11 +47,13 @@ mostra a previsão de quatro dias e um gráfico com as temperaturas mínimas e m
 - Rodapé em todas as telas identificando o **CPTEC/INPE como fonte dos dados**.
 
 ### Extras
+
 - **Cidades favoritas** (estrela na tela de previsão) e **consultadas recentemente** na tela inicial.
 - **Funcionamento sem internet:** a última previsão de cada cidade fica salva e é exibida quando não há conexão, com um aviso da data em que foi salva.
 - Tema claro/escuro (Material 3).
 
 ### Navegação entre telas
+
 `TelaBusca` (pesquisa, favoritas e recentes) → `Navigator.push` → `TelaPrevisao` (previsão + gráfico). Ao voltar, a tela inicial recarrega favoritas e recentes.
 
 ---
@@ -77,11 +82,12 @@ flutter test
 ```
 
 Observações:
-- O `AndroidManifest.xml` já declara a permissão `INTERNET` (necessária no build de *release*) e
+
+- O `AndroidManifest.xml` já declara a permissão `INTERNET` (necessária no build de _release_) e
   `usesCleartextTraffic`, usado no fallback para `http://` caso o HTTPS do CPTEC/INPE falhe.
 - **Flutter Web não é recomendado**: o serviço do CPTEC/INPE não envia cabeçalhos CORS, então o
   navegador bloqueia as requisições. Use Android, iOS ou desktop.
-- A partir do Flutter 3.47 o import `package:flutter/material.dart` aparece como *deprecated*
+- A partir do Flutter 3.47 o import `package:flutter/material.dart` aparece como _deprecated_
   (substituído pelo pacote `material_ui`). O projeto mantém o import clássico para funcionar em
   versões antigas e novas do SDK; o aviso foi silenciado no `analysis_options.yaml`.
 
@@ -89,13 +95,13 @@ Observações:
 
 ## Bibliotecas utilizadas
 
-| Pacote | Uso |
-|---|---|
-| [`http`](https://pub.dev/packages/http) | Requisições HTTP ao serviço do CPTEC/INPE (e `MockClient` nos testes). |
-| [`xml`](https://pub.dev/packages/xml) | Leitura (parse) das respostas em XML. |
-| [`shared_preferences`](https://pub.dev/packages/shared_preferences) | Persistência local (favoritas, recentes e cache da previsão). |
-| [`fl_chart`](https://pub.dev/packages/fl_chart) | Gráfico de linhas das temperaturas. |
-| `flutter_test`, `flutter_lints` | Testes e regras de análise estática. |
+| Pacote                                                              | Uso                                                                    |
+| ------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| [`http`](https://pub.dev/packages/http)                             | Requisições HTTP ao serviço do CPTEC/INPE (e `MockClient` nos testes). |
+| [`xml`](https://pub.dev/packages/xml)                               | Leitura (parse) das respostas em XML.                                  |
+| [`shared_preferences`](https://pub.dev/packages/shared_preferences) | Persistência local (favoritas, recentes e cache da previsão).          |
+| [`fl_chart`](https://pub.dev/packages/fl_chart)                     | Gráfico de linhas das temperaturas.                                    |
+| `flutter_test`, `flutter_lints`                                     | Testes e regras de análise estática.                                   |
 
 ---
 
@@ -104,13 +110,14 @@ Observações:
 A persistência usa o **`shared_preferences`** (armazenamento chave/valor nativo: `SharedPreferences`
 no Android e `NSUserDefaults` no iOS). Toda a lógica fica em `lib/services/armazenamento_local.dart`:
 
-| Chave | Conteúdo | Quando é gravado |
-|---|---|---|
-| `cidades_recentes` | Lista JSON com até 8 cidades (`id`, `nome`, `uf`), da mais recente para a mais antiga. | Ao abrir a previsão de uma cidade. |
-| `cidades_favoritas` | Lista JSON das cidades favoritas, em ordem alfabética. | Ao tocar na estrela da tela de previsão. |
+| Chave                     | Conteúdo                                                                                 | Quando é gravado                                           |
+| ------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `cidades_recentes`        | Lista JSON com até 8 cidades (`id`, `nome`, `uf`), da mais recente para a mais antiga.   | Ao abrir a previsão de uma cidade.                         |
+| `cidades_favoritas`       | Lista JSON das cidades favoritas, em ordem alfabética.                                   | Ao tocar na estrela da tela de previsão.                   |
 | `previsao_cache_<código>` | JSON com o **XML original** da última previsão da cidade e a data/hora em que foi salvo. | A cada consulta bem-sucedida que retorne dias de previsão. |
 
 Fluxo da tela de previsão:
+
 1. Ao abrir, a previsão salva (se houver) é exibida imediatamente.
 2. Em seguida o app consulta o CPTEC/INPE; se der certo, mostra os dados novos e atualiza o cache.
 3. Se a consulta falhar, a previsão salva continua na tela, com um aviso do erro e da data em que foi salva.
@@ -143,15 +150,3 @@ test/
 ├── cptec_parser_test.dart           # Parser, siglas, acentos e datas
 └── widget_test.dart                 # Busca, "nenhuma cidade", erros (com MockClient)
 ```
-
----
-
-## Capturas de tela
-
-| Tela inicial | Resultados da busca | Previsão e gráfico |
-|---|---|---|
-| ![Tela inicial](docs/screenshots/01_inicio.png) | ![Busca](docs/screenshots/02_busca.png) | ![Previsão](docs/screenshots/03_previsao.png) |
-
-| Dias da previsão | Nenhuma cidade encontrada | Sem conexão / dados salvos |
-|---|---|---|
-| ![Dias](docs/screenshots/04_dias.png) | ![Nenhuma cidade](docs/screenshots/05_nenhuma_cidade.png) | ![Erro](docs/screenshots/06_sem_conexao.png) |

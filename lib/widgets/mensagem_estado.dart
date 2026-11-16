@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../services/cptec_service.dart';
 
-/// Mensagem centralizada com ícone, título, texto e ação opcional.
-/// Usada para estados vazios ("nenhuma cidade encontrada") e de erro.
 class MensagemEstado extends StatelessWidget {
   final IconData icone;
   final String titulo;
@@ -59,7 +57,6 @@ class MensagemEstado extends StatelessWidget {
   }
 }
 
-/// Mensagem de erro adequada para cada tipo de falha do serviço.
 class MensagemErro extends StatelessWidget {
   final CptecException erro;
   final VoidCallback onTentarNovamente;

@@ -5,7 +5,6 @@ import 'package:xml/xml.dart';
 import '../models/cidade.dart';
 import '../models/previsao.dart';
 
-/// Lançada quando o conteúdo recebido não é um XML válido do CPTEC/INPE.
 class RespostaInvalidaException implements Exception {
   final String detalhe;
   const RespostaInvalidaException(this.detalhe);
@@ -14,32 +13,9 @@ class RespostaInvalidaException implements Exception {
   String toString() => 'RespostaInvalidaException: $detalhe';
 }
 
-/// Converte as respostas XML do CPTEC/INPE em objetos Dart.
-///
-/// Exemplo de resposta de `listaCidades`:
-/// ```xml
-/// <cidades>
-///   <cidade><nome>São Paulo</nome><uf>SP</uf><id>244</id></cidade>
-/// </cidades>
-/// ```
-///
-/// Exemplo de resposta de `cidade/{id}/previsao.xml`:
-/// ```xml
-/// <cidade>
-///   <nome>São Paulo</nome><uf>SP</uf><atualizacao>2026-11-16</atualizacao>
-///   <previsao>
-///     <dia>2026-11-16</dia><tempo>pn</tempo>
-///     <maxima>28</maxima><minima>18</minima><iuv>11.0</iuv>
-///   </previsao>
-///   ...
-/// </cidade>
-/// ```
 class CptecParser {
   CptecParser._();
 
-  /// Decodifica os bytes da resposta. O CPTEC/INPE costuma responder em
-  /// ISO-8859-1 (Latin-1); se a declaração XML indicar isso, usamos Latin-1.
-  /// Caso contrário tentamos UTF-8 e, se falhar, voltamos para Latin-1.
   static String decodificar(List<int> bytes) {
     final inicio = latin1.decode(bytes.take(200).toList(), allowInvalid: true);
     final encoding = RegExp(r'''encoding\s*=\s*["']([^"']+)["']''')
@@ -64,7 +40,7 @@ class CptecParser {
       for (final el in raiz.findElements('cidade')) {
         final id = int.tryParse(_texto(el, 'id') ?? '');
         final nome = _texto(el, 'nome');
-        if (id == null || nome == null) continue; // ignora itens incompletos
+        if (id == null || nome == null) continue;
         cidades.add(Cidade(id: id, nome: nome, uf: _texto(el, 'uf') ?? ''));
       }
       return cidades;
@@ -105,10 +81,6 @@ class CptecParser {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // Auxiliares
-  // ---------------------------------------------------------------------------
-
   static XmlElement _raiz(String xml, String nomeEsperado) {
     final conteudo = xml.trim();
     if (conteudo.isEmpty) {
@@ -129,7 +101,6 @@ class CptecParser {
     return raiz;
   }
 
-  /// Texto de um elemento filho; ausente, vazio ou "null" vira `null`.
   static String? _texto(XmlElement pai, String tag) {
     final valor = pai.getElement(tag)?.innerText.trim();
     if (valor == null || valor.isEmpty) return null;
@@ -141,8 +112,6 @@ class CptecParser {
   static DateTime? _data(String? valor) {
     if (valor == null) return null;
     final data = DateTime.tryParse(valor);
-    // O serviço já foi visto retornando datas como 1969-12-31 quando não há
-    // previsão para o código informado; tratamos isso como ausência de dado.
     if (data == null || data.year < 2000) return null;
     return data;
   }
